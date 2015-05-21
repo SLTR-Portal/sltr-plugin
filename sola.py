@@ -20,10 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication,QFileInfo, QVariant
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, QVariant
 from PyQt4.QtGui import QAction, QIcon, QMessageBox
 
-from qgis.core import QgsDataSourceURI,QgsRasterLayer,QgsMapLayerRegistry,QgsMapRenderer,QgsFeature,QgsField,QgsVectorDataProvider,QgsFeatureRequest
+from qgis.core import QgsDataSourceURI, QgsRasterLayer, QgsMapLayerRegistry, QgsMapRenderer, QgsFeature, QgsField, \
+    QgsVectorDataProvider, QgsFeatureRequest
 from qgis.gui import QgsMessageBar
 # Initialize Qt resources from file resources.py
 import resources_rc
@@ -66,12 +67,19 @@ class SolaPlugin:
 
         # Create the dialog (after translation) and keep reference
         self.dlg = LoginDialog()
+        self.dlg2 = SolaPluginDialog()
 
         # Declare instance attributes
         self.actions = []
-        self.user=''
-        self.fid=0
-        self.parcel_id=''
+        self.user = ''
+        self.fid = 0
+        self.parcel_id = ''
+        self.transactionId = ''
+        self.db_hostName='localhost'
+        self.db_databaseName='sola'
+        self.db_UserName='postgres'
+        self.db_password='solakogi'
+        self.db_Port=5432
         self.menu = self.tr(u'&SLTRPlugin')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'SLTRPlugin')
@@ -94,16 +102,16 @@ class SolaPlugin:
 
 
     def add_action(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
+            self,
+            icon_path,
+            text,
+            callback,
+            enabled_flag=True,
+            add_to_menu=True,
+            add_to_toolbar=True,
+            status_tip=None,
+            whats_this=None,
+            parent=None):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -204,121 +212,127 @@ class SolaPlugin:
             print self.dlg.userNameBox.text()
             print self.dlg.pswdBox.text()
             # Check User namer and password
-            username=self.dlg.userNameBox.text()
-            password=self.dlg.pswdBox.text()
-            if self.authUser(username,password)==True:
-                self.user=username
-                self.iface.messageBar().pushMessage("Success", "Login Successful! Welcome "+self.dlg.userNameBox.text(), level=QgsMessageBar.INFO,duration=5)
-
+            username = self.dlg.userNameBox.text()
+            password = self.dlg.pswdBox.text()
+            if self.authUser(username, password) == True:
+                self.user = username
+                self.iface.messageBar().pushMessage("Success",
+                                                    "Login Successful! Welcome " + self.dlg.userNameBox.text(),
+                                                    level=QgsMessageBar.INFO, duration=5)
+                self.transactionId = self.getTransactionId()
                 self.createLGALayer()
                 self.createRasterLayer()
                 self.createWardLayer()
                 self.createParcelLayer()
-                layer=self.iface.activeLayer()
-                canvas=self.iface.mapCanvas()
-                extent=layer.extent()
+                layer = self.iface.activeLayer()
+                canvas = self.iface.mapCanvas()
+                extent = layer.extent()
                 canvas.setExtent(extent)
                 self.dlg.close()
             else:
-                self.iface.messageBar().pushMessage("Error", "Your Login attempt was unsuccessful. Please try again", level=QgsMessageBar.CRITICAL,duration=5)
-            # tryout
+                self.iface.messageBar().pushMessage("Error", "Your Login attempt was unsuccessful. Please try again",
+                                                    level=QgsMessageBar.CRITICAL, duration=5)
+                self.run()
+                # tryout
 
-            #END TRY'''
+                # END TRY'''
+
     def captureFeatures(self, fid):
         print 'Feature Added'
         print fid
-        self.fid=fid
+        self.fid = fid
         self.initDialog()
-        #self.getUUID()
-        self.saveEdit(self.parcel_id)
-        # Check if there are edited features
 
-        #self.initDialog()
 
     def startEdit(self):
         print 'Edit started'
+
     def finishEdit(self):
         print 'Yes boss!'
-        #self.initDialog()
-        layer=self.iface.activeLayer()
+        # self.initDialog()
+        layer = self.iface.activeLayer()
         self.initDialog()
+
     def initDialog(self):
-        self.dlg2=SolaPluginDialog()
         self.dlg2.show()
         result = self.dlg2.exec_()
         if result:
-            print 'Done!'
-            print result
-            print self.dlg2.parcel_id.text()
-            self.parcel_id=self.dlg2.parcel_id.text()
+            if self.checkParcelNumberExists(self.dlg2.parcel_id.text()):
+                self.parcel_id = self.dlg2.parcel_id.text()
+                self.dlg2.parcel_id.setText('')
+                self.saveEdit(self.parcel_id)
+            else:
+                self.initDialog()
 
     def createParcelLayer(self):
-            uri = QgsDataSourceURI()
-            uri.setConnection("localhost", "5432", "sola", "postgres", "solakogi")
-            uri.setDataSource("cadastre", "cadastre_object", "geom_polygon")
-            uri.uri()
-            print uri.uri()
+        uri = QgsDataSourceURI()
+        uri.setConnection(self.db_hostName, str(self.db_Port), self.db_databaseName, self.db_UserName, self.db_password)
+        uri.setDataSource("cadastre", "cadastre_object", "geom_polygon")
+        uri.uri()
+        print uri.uri()
 
-            rlayer = self.iface.addVectorLayer(uri.uri(), "Parcels", "postgres")
-            self.iface.setActiveLayer(rlayer)
+        rlayer = self.iface.addVectorLayer(uri.uri(), "Parcels", "postgres")
+        self.iface.setActiveLayer(rlayer)
 
-            rlayer.loadNamedStyle(self.plugin_dir+'/style.qml')
-
-            rlayer.featureAdded.connect(self.captureFeatures)
+        rlayer.loadNamedStyle(self.plugin_dir + '/style.qml')
+        #rlayer.layerModified.connect(self.captureFeatures)
+        rlayer.featureAdded.connect(self.captureFeatures)
+        rlayer.startEditing()
 
     def createWardLayer(self):
-            uri = QgsDataSourceURI()
-            uri.setConnection("localhost", "5432", "sola", "postgres", "solakogi")
-            uri.setDataSource("cadastre", "spatial_unit_group", "geom","hierarchy_level=3")
-            uri.uri()
-            print uri.uri()
-            rlayer = self.iface.addVectorLayer(uri.uri(), "Ward", "postgres")
-            rlayer.loadNamedStyle(self.plugin_dir+'/ward.qml')
+        uri = QgsDataSourceURI()
+        uri.setConnection(self.db_hostName, str(self.db_Port), self.db_databaseName, self.db_UserName, self.db_password)
+        uri.setDataSource("cadastre", "spatial_unit_group", "geom", "hierarchy_level=3")
+        uri.uri()
+        print uri.uri()
+        rlayer = self.iface.addVectorLayer(uri.uri(), "Ward", "postgres")
+        rlayer.loadNamedStyle(self.plugin_dir + '/ward.qml')
 
     def createLGALayer(self):
-            uri = QgsDataSourceURI()
-            uri.setConnection("localhost", "5432", "sola", "postgres", "solakogi")
-            uri.setDataSource("cadastre", "spatial_unit_group", "geom","hierarchy_level=2")
-            uri.uri()
-            print uri.uri()
-            rlayer = self.iface.addVectorLayer(uri.uri(), "LGA", "postgres")
-            rlayer.loadNamedStyle(self.plugin_dir+'/lga.qml')
+        uri = QgsDataSourceURI()
+        uri.setConnection(self.db_hostName, str(self.db_Port), self.db_databaseName, self.db_UserName, self.db_password)
+        uri.setDataSource("cadastre", "spatial_unit_group", "geom", "hierarchy_level=2")
+        uri.uri()
+        print uri.uri()
+        rlayer = self.iface.addVectorLayer(uri.uri(), "LGA", "postgres")
+        rlayer.loadNamedStyle(self.plugin_dir + '/lga.qml')
 
     def createRasterLayer(self):
         urlWithParams = 'url=http://localhost:8085/geoserver/lokoja/wms?service=WMS&version=1.1.0&request=GetMap&layers=Lokoja&styles=&crs=EPSG:32632&format=image/png'
-        rlayer = QgsRasterLayer(urlWithParams, 'MA-ALUS', 'wms')
+        rlayer = QgsRasterLayer(urlWithParams, 'Orthophoto', 'wms')
         QgsMapLayerRegistry.instance().addMapLayer(rlayer)
         urlWithParams = 'url=http://localhost:8085/geoserver/lokoja/wms?service=WMS&version=1.1.0&request=GetMap&layers=Lokoja_Mos_Nov2011_50cm_Color&styles=&crs=EPSG:32632&format=image/png'
-        rlayer = QgsRasterLayer(urlWithParams, 'lokoja:Lokoja', 'wms')
+        rlayer = QgsRasterLayer(urlWithParams, 'Orthophoto', 'wms')
         QgsMapLayerRegistry.instance().addMapLayer(rlayer)
 
-    def authUser(self,username,pswd):
+    def authUser(self, username, pswd):
         db = QSqlDatabase('QPSQL')
         if db.isValid():
-            db.setHostName('localhost')
+            db.setHostName(self.db_hostName)
             # string
-            db.setDatabaseName('sola')
+            db.setDatabaseName(self.db_databaseName)
             # string
-            db.setUserName('postgres')
+            db.setUserName(self.db_UserName)
             # string
-            db.setPassword('solakogi')
+            db.setPassword(self.db_password)
             # integer e.g. 5432
-            db.setPort(5432)
+            db.setPort(self.db_Port)
             if db.open():
                 # assume you have a table called 'appuser'
-                query = db.exec_("select * from system.appuser where username='"+username+"'")
-                #No password implementations yet
+                query = db.exec_("select * from system.appuser where username='" + username + "'")
+                # No password implementations yet
                 # iterate over the rows
-                if query.size()==1:
+                if query.size() == 1:
                     return True
-                else: return False
+                else:
+                    return False
 
         pass
 
-    def saveEdit(self,values):
+    def saveEdit(self, values):
 
-        layer=self.iface.activeLayer()
-        fid=self.fid
+        layer = self.iface.activeLayer()
+        fid = self.fid
         print fid
         # print feature.id()
         # print feature.geometry()
@@ -326,71 +340,135 @@ class SolaPlugin:
         caps = layer.dataProvider().capabilities()
         if caps & QgsVectorDataProvider.AddAttributes:
             feature = layer.getFeatures(QgsFeatureRequest(fid)).next()
-            transaction_id=self.getTransactionId()
-            layer.changeAttributeValue(fid, feature.fieldNameIndex('id'),self.getUUID())
-            layer.changeAttributeValue(fid, feature.fieldNameIndex('type_code'),'parcel')
-            layer.changeAttributeValue(fid, feature.fieldNameIndex('name_firstpart'),values)
-            layer.changeAttributeValue(fid, feature.fieldNameIndex('name_lastpart'),'KG/LKJ/8')
-            layer.changeAttributeValue(fid, feature.fieldNameIndex('status_code'),'pending')
-            layer.changeAttributeValue(fid, feature.fieldNameIndex('change_action'),'i')
-            layer.changeAttributeValue(fid, feature.fieldNameIndex('change_user'),self.user)
-            layer.changeAttributeValue(fid, feature.fieldNameIndex('transaction_id'), transaction_id)
-            layer.changeAttributeValue(fid, feature.fieldNameIndex('land_use_code'), 'residential')
-            # feat.setGeometry()
-            layer.commitChanges()
-            (res,outFeat)=layer.dataProvider().addFeatures([feature])
+            # transaction_id=self.getTransactionId()
+            # check that the specified parcel number exists
+            print self.transactionId
+            if(self.checkParcelNumberExists(values)):
+                name_lastpart=self.getNameLastPart(feature.geometry().exportToWkt())
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('id'), self.getUUID())
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('type_code'), 'parcel')
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('name_firstpart'), values)
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('name_lastpart'), name_lastpart)
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('status_code'), 'pending')
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('change_action'), 'i')
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('change_user'), self.user)
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('transaction_id'), self.transactionId)
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('land_use_code'), 'residential')
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('view_id'), 1)
+                # feat.setGeometry()
+                (res, outFeat) = layer.dataProvider().addFeatures([feature])
+                layer.commitChanges()
+                layer.startEditing()
+                print res;
+            else:
+                self.iface.messageBar().pushMessage("Error",
+                                                        "An error has occurred. Please ensure this parcel number is correct and try again",
+                                                        level=QgsMessageBar.CRITICAL, duration=5)
 
-            print res;
 
         pass
-    def checkParcelNumberExists(self,parcelNumber):
+
+    def checkParcelNumberExists(self, parcelNumber):
         # Check the forms table to verify the existence of the parcel number in the form table
         db = QSqlDatabase('QPSQL')
         if db.isValid():
-            db.setHostName('localhost')
+            db.setHostName(self.db_hostName)
             # string
-            db.setDatabaseName('sola')
+            db.setDatabaseName(self.db_databaseName)
             # string
-            db.setUserName('postgres')
+            db.setUserName(self.db_UserName)
             # string
-            db.setPassword('solakogi')
+            db.setPassword(self.db_password)
             # integer e.g. 5432
-            db.setPort(5432)
+            db.setPort(self.db_Port)
             if db.open():
                 # assume you have a table called 'appuser'
-                query = db.exec_("select nr from public.form where nr='"+parcelNumber+"'")
+                query = db.exec_("select nr from public.form where nr='" + parcelNumber + "'")
                 #
-                # iterate over the rows to see if there is atleast one record
-                if query.size()==1:
+                # iterate over the rows to see if there is only one record and it exists
+                if query.size() == 1:
                     return True
-                else: return False
+                else:
+                    return False
         pass
 
     # Implementation to standardize db calls
     def getDb(self):
         pass
+
     def getTransactionId(self):
-        return '010656ad-1725-41e6-b172-064e9b89b323'
+        # return '010656ad-1725-41e6-b172-064e9b89b323'
+        # Essentially create a transaction ID in code, insert the transaction entry and store in the session variable
+        did = str(self.getUUID())
+        db = QSqlDatabase('QPSQL')
+        if db.isValid():
+            db.setHostName(self.db_hostName)
+            # string
+            db.setDatabaseName(self.db_databaseName)
+            # string
+            db.setUserName(self.db_UserName)
+            # string
+            db.setPassword(self.db_password)
+            # integer e.g. 5432
+            db.setPort(self.db_Port)
+            if db.open():
+                # assume you have a table called 'appuser'
+                query = db.exec_("insert into transaction.transaction(id,change_action,change_user) VALUES('" + did + "','i','" + self.user + "')")
+                # iterate over the rows
+                #if query.size() == 1:
+                #self.transactionId = did
+                print did
+                return did
+                # else:
+                #     self.iface.messageBar().pushMessage("Error",
+                #                                         "An error has occurred. Please notify the administrator",
+                #                                         level=QgsMessageBar.CRITICAL, duration=5)
+
     def getUUID(self):
         db = QSqlDatabase('QPSQL')
         if db.isValid():
-            db.setHostName('localhost')
+            db.setHostName(self.db_hostName)
             # string
-            db.setDatabaseName('sola')
+            db.setDatabaseName(self.db_databaseName)
             # string
-            db.setUserName('postgres')
+            db.setUserName(self.db_UserName)
             # string
-            db.setPassword('solakogi')
+            db.setPassword(self.db_password)
             # integer e.g. 5432
-            db.setPort(5432)
+            db.setPort(self.db_Port)
             if db.open():
                 # assume you have a table called 'appuser'
                 query = db.exec_("select uuid_generate_v1()")
-                #No password implementations yet
                 # iterate over the rows
-                if query.size()==1:
+                if query.size() == 1:
                     query.next()
                     return str(query.value(0))
-                else: return False
+                else:
+                    return False
 
+        pass
+
+    def getNameLastPart(self, geom):
+        db = QSqlDatabase('QPSQL')
+
+        if db.isValid():
+            db.setHostName(self.db_hostName)
+            # string
+            db.setDatabaseName(self.db_databaseName)
+            # string
+            db.setUserName(self.db_UserName)
+            # string
+            db.setPassword(self.db_password)
+            # integer e.g. 5432
+            db.setPort(self.db_Port)
+            if db.open():
+                print str(geom)
+                query=db.exec_("select cadastre.get_new_cadastre_object_identifier_last_part((SELECT ST_PolygonFromText(('"+str(geom)+"'),32632)),'value')")
+                if query.size()==1:
+                    query.next()
+                    print str(query.value(0))
+                    return str(query.value(0))
+                else:
+                    return ''
+            pass
         pass
