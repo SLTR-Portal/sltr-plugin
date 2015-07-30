@@ -20,18 +20,18 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, QVariant
-from PyQt4.QtGui import QAction, QIcon, QMessageBox
+from PyQt4.QtCore import *  # QSettings, QTranslator, qVersion, QCoreApplication, QFileInfo, QVariant
+from PyQt4.QtGui import *  #QAction, QIcon, QMessageBox
 
-from qgis.core import QgsDataSourceURI, QgsRasterLayer, QgsMapLayerRegistry, QgsMapRenderer, QgsFeature, QgsField, \
-    QgsVectorDataProvider, QgsFeatureRequest
+from qgis.core import QgsDataSourceURI, QgsRasterLayer, QgsMapLayerRegistry, QgsVectorDataProvider, QgsFeatureRequest
 from qgis.gui import QgsMessageBar
 # Initialize Qt resources from file resources.py
-import resources_rc
 # Import the code for the dialog
 from login_dialog import LoginDialog
 from sola_dialog import SolaPluginDialog
+from customform import CreateFormDialog
 import os.path
+import sys
 from PyQt4.QtSql import *
 # from datetime import datetime
 
@@ -51,6 +51,7 @@ class SolaPlugin:
         self.iface = iface
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
+        if not sys.path.__contains__(self.plugin_dir): sys.path.append(self.plugin_dir)
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
@@ -68,9 +69,11 @@ class SolaPlugin:
         # Create the dialog (after translation) and keep reference
         self.dlg = LoginDialog()
         self.dlg2 = SolaPluginDialog()
+        self.dlg3 = CreateFormDialog()
 
         # Declare instance attributes
         self.actions = []
+        self.fid_array = []
         self.user = ''
         self.fid = 0
         self.parcel_id = ''
@@ -78,7 +81,7 @@ class SolaPlugin:
         self.db_hostName='localhost'
         self.db_databaseName='sola'
         self.db_UserName='postgres'
-        self.db_password='solakogi'
+        self.db_password = 'admin1'
         self.db_Port=5432
         self.menu = self.tr(u'&SLTRPlugin')
         # TODO: We are going to let the user set this up in a future iteration
@@ -218,11 +221,13 @@ class SolaPlugin:
                 self.user = username
                 self.iface.messageBar().pushMessage("Success",
                                                     "Login Successful! Welcome " + self.dlg.userNameBox.text(),
-                                                    level=QgsMessageBar.INFO, duration=5)
+                                                    level=QgsMessageBar.INFO, duration=3)
                 self.transactionId = self.getTransactionId()
                 self.createLGALayer()
                 self.createRasterLayer()
                 self.createWardLayer()
+                self.createSectionLayer()
+                self.createBlockLayer()
                 self.createParcelLayer()
                 layer = self.iface.activeLayer()
                 canvas = self.iface.mapCanvas()
@@ -240,8 +245,13 @@ class SolaPlugin:
     def captureFeatures(self, fid):
         print 'Feature Added'
         print fid
-        self.fid = fid
-        self.initDialog()
+        if fid in self.fid_array:
+            print "I saw it there!!"
+            pass
+        else:
+            self.fid = fid
+            self.fid_array.append(fid)
+            self.initDialog()
 
 
     def startEdit(self):
@@ -251,18 +261,39 @@ class SolaPlugin:
         print 'Yes boss!'
         # self.initDialog()
         layer = self.iface.activeLayer()
-        self.initDialog()
+        self.initDialog('')
 
-    def initDialog(self):
+    def initDialog(self, error=''):
+        if error != '':
+            self.dlg2.error_label.setText(error)
         self.dlg2.show()
         result = self.dlg2.exec_()
+        layer = self.iface.activeLayer()
         if result:
             if self.checkParcelNumberExists(self.dlg2.parcel_id.text()):
                 self.parcel_id = self.dlg2.parcel_id.text()
-                self.dlg2.parcel_id.setText('')
-                self.saveEdit(self.parcel_id)
+                if self.checkParcelExistsAlready(self.parcel_id) == False:
+                    # self.dlg2.parcel_id.setText('')
+                    layer.featureAdded.disconnect(self.captureFeatures)
+                    self.saveEdit(self.parcel_id)
+                    layer.featureAdded.connect(self.captureFeatures)
+                else:
+                    # layer.deleteFeature(fid)
+                    # self.resetFid()
+                    # layer.commitChanges()
+                    # layer.startEditing()
+                    self.initDialog('Parcel Number already exists! Please check and try again')
             else:
-                self.initDialog()
+
+                # self.resetFid()
+                # layer.commitChanges()
+                # layer.startEditing()
+                self.initDialog('The Parcel Number doesn''t exist for the generated forms. Please try again')
+        else:
+            layer.deleteFeature(self.fid)
+            layer.commitChanges()
+            layer.startEditing()
+        self.dlg2.parcel_id.setText('')
 
     def createParcelLayer(self):
         uri = QgsDataSourceURI()
@@ -277,6 +308,8 @@ class SolaPlugin:
         rlayer.loadNamedStyle(self.plugin_dir + '/style.qml')
         #rlayer.layerModified.connect(self.captureFeatures)
         rlayer.featureAdded.connect(self.captureFeatures)
+        rlayer.setEditForm(self.plugin_dir + os.sep + 'createForm.ui')
+        #rlayer.setEditFormInit('.CreateFormDialog.formOpen')
         rlayer.startEditing()
 
     def createWardLayer(self):
@@ -298,12 +331,30 @@ class SolaPlugin:
         rlayer.loadNamedStyle(self.plugin_dir + '/lga.qml')
 
     def createRasterLayer(self):
-        urlWithParams = 'url=http://localhost:8085/geoserver/lokoja/wms?service=WMS&version=1.1.0&request=GetMap&layers=Lokoja&styles=&crs=EPSG:32632&format=image/png'
+        urlWithParams = 'url=http://localhost:8085/geoserver/calabar/wms?service=WMS&version=1.1.0&request=GetMap&layers=Calabar_20Dec2013_50cm_Colr2&styles=&srs=EPSG:4326&format=image/jpeg'
         rlayer = QgsRasterLayer(urlWithParams, 'Orthophoto', 'wms')
         QgsMapLayerRegistry.instance().addMapLayer(rlayer)
-        urlWithParams = 'url=http://localhost:8085/geoserver/lokoja/wms?service=WMS&version=1.1.0&request=GetMap&layers=Lokoja_Mos_Nov2011_50cm_Color&styles=&crs=EPSG:32632&format=image/png'
-        rlayer = QgsRasterLayer(urlWithParams, 'Orthophoto', 'wms')
-        QgsMapLayerRegistry.instance().addMapLayer(rlayer)
+        # urlWithParams = 'url=http://localhost:8085/geoserver/lokoja/wms?service=WMS&version=1.1.0&request=GetMap&layers=Lokoja_Mos_Nov2011_50cm_Color&styles=&crs=EPSG:32632&format=image/png'
+        # rlayer = QgsRasterLayer(urlWithParams, 'Orthophoto', 'wms')
+        # QgsMapLayerRegistry.instance().addMapLayer(rlayer)
+
+    def createSectionLayer(self):
+        uri = QgsDataSourceURI()
+        uri.setConnection(self.db_hostName, str(self.db_Port), self.db_databaseName, self.db_UserName, self.db_password)
+        uri.setDataSource("cadastre", "spatial_unit_group", "geom", "hierarchy_level=4")
+        uri.uri()
+        print uri.uri()
+        rlayer = self.iface.addVectorLayer(uri.uri(), "Section", "postgres")
+        rlayer.loadNamedStyle(self.plugin_dir + '/lga.qml')
+
+    def createBlockLayer(self):
+        uri = QgsDataSourceURI()
+        uri.setConnection(self.db_hostName, str(self.db_Port), self.db_databaseName, self.db_UserName, self.db_password)
+        uri.setDataSource("cadastre", "spatial_unit_group", "geom", "hierarchy_level=5")
+        uri.uri()
+        print uri.uri()
+        rlayer = self.iface.addVectorLayer(uri.uri(), "Blocks", "postgres")
+        rlayer.loadNamedStyle(self.plugin_dir + '/lga.qml')
 
     def authUser(self, username, pswd):
         db = QSqlDatabase('QPSQL')
@@ -343,10 +394,12 @@ class SolaPlugin:
             # transaction_id=self.getTransactionId()
             # check that the specified parcel number exists
             print self.transactionId
-            if(self.checkParcelNumberExists(values)):
+            print values
+            if self.checkParcelExistsAlready(values) == False:
                 name_lastpart=self.getNameLastPart(feature.geometry().exportToWkt())
                 layer.changeAttributeValue(fid, feature.fieldNameIndex('id'), self.getUUID())
                 layer.changeAttributeValue(fid, feature.fieldNameIndex('type_code'), 'parcel')
+                layer.changeAttributeValue(fid, feature.fieldNameIndex('source_reference'), values)
                 layer.changeAttributeValue(fid, feature.fieldNameIndex('name_firstpart'), values)
                 layer.changeAttributeValue(fid, feature.fieldNameIndex('name_lastpart'), name_lastpart)
                 layer.changeAttributeValue(fid, feature.fieldNameIndex('status_code'), 'pending')
@@ -355,15 +408,14 @@ class SolaPlugin:
                 layer.changeAttributeValue(fid, feature.fieldNameIndex('transaction_id'), self.transactionId)
                 layer.changeAttributeValue(fid, feature.fieldNameIndex('land_use_code'), 'residential')
                 layer.changeAttributeValue(fid, feature.fieldNameIndex('view_id'), 1)
+                #self.fid_array.append(fid)
                 # feat.setGeometry()
                 (res, outFeat) = layer.dataProvider().addFeatures([feature])
                 layer.commitChanges()
                 layer.startEditing()
-                print res;
+                print res
             else:
-                self.iface.messageBar().pushMessage("Error",
-                                                        "An error has occurred. Please ensure this parcel number is correct and try again",
-                                                        level=QgsMessageBar.CRITICAL, duration=5)
+                self.initDialog('An error has occurred. Duplicate Parcel Number. Please check and try again')
 
 
         pass
@@ -393,7 +445,27 @@ class SolaPlugin:
         pass
 
     # Implementation to standardize db calls
-    def getDb(self):
+    def checkParcelExistsAlready(self, parcelNumber):
+        db = QSqlDatabase('QPSQL')
+        if db.isValid():
+            db.setHostName(self.db_hostName)
+            # string
+            db.setDatabaseName(self.db_databaseName)
+            # string
+            db.setUserName(self.db_UserName)
+            # string
+            db.setPassword(self.db_password)
+            # integer e.g. 5432
+            db.setPort(self.db_Port)
+            if db.open():
+                query = db.exec_(
+                    "select name_firstpart from cadastre.cadastre_object where name_firstpart='" + parcelNumber + "'")
+                #
+                # iterate over the rows to see if there is only one record and it exists
+                if query.size() > 1:
+                    return True
+                else:
+                    return False
         pass
 
     def getTransactionId(self):
@@ -472,3 +544,33 @@ class SolaPlugin:
                     return ''
             pass
         pass
+
+    def checkOverlaps(self):
+        pass
+
+    def resetFid(self):
+        self.fid = 0
+
+        # def formOpen(self,layerid,featureid):
+        # # global myDialog
+        #     #myDialog = dialog
+        #     # global nameField
+        #     nameField = self.dlg3.findChild(QLineEdit,"name_firstpart")
+        #     buttonBox = self.dlg3.findChild(QDialogButtonBox,"buttonBox")
+        #
+        #     # Disconnect the signal that QGIS has wired up for the dialog to the button box.
+        #     buttonBox.accepted.disconnect(self.dlg3.accept)
+        #
+        #     # Wire up our own signals.
+        #     buttonBox.accepted.connect(self.validate)
+        #     buttonBox.rejected.connect(self.dlg3.reject)
+        #
+        # def validate(self):
+        #   # Make sure that the name field isn't empty.
+        #     if not len(self.dlg3.name_first_part.text()) > 0:
+        #         msgBox = QMessageBox()
+        #         msgBox.setText("Parcel Number can not be null.")
+        #         msgBox.exec_()
+        #     else:
+        #         # Return the form as expected to QGIS.
+        #         self.dlg3.accept()
