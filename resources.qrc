@@ -1,5 +1,6 @@
 <RCC>
-    <qresource prefix="/plugins/SolaPlugin" >
-        <file>icon.png</file>
-    </qresource>
+  <qresource prefix="/plugins/SLTRPlugin">
+    <file>icon.png</file>
+    <file>splash2015.jpg</file>
+  </qresource>
 </RCC>

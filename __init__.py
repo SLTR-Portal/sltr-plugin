@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- SolaPlugin
+ SLTRPlugin
                                  A QGIS plugin
  This plugin extends SOLA's functionality using QGIS
                              -------------------
@@ -25,11 +25,11 @@
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
-    """Load SolaPlugin class from file SolaPlugin.
+    """Load SLTRPlugin class from file SolaPlugin.
 
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
     #
-    from sola import SolaPlugin
-    return SolaPlugin(iface)
+    from sltr import SLTRPlugin
+    return SLTRPlugin(iface)

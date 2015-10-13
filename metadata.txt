@@ -7,11 +7,11 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=sola-plugin
+name=SLTR-plugin
 qgisMinimumVersion=2.0
-description=This plugin extends SOLA's functionality using QGIS
-version=0.1
-author=SOLA
+description=This plugin extends SLTR Portal's functionality using QGIS for digitizing parcels and keeping audit trails.
+version=1.7
+author=SLTR Portal
 email=samuel.okoroafor@gems3nigeria.com
 
 # End of mandatory metadata
