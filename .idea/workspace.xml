@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="12b20acb-861b-4e59-a769-2775c1eda8ae" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config.ini" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config_calabar.ini" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config_lokoja.ini" />
-      <change type="DELETED" beforePath="C:\Users\Samuel\.qgis2\python\plugins\SLTRPlugin\.idea\sola-plugin.iml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\Samuel\.qgis2\python\plugins\SLTRPlugin\sola.py" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/createForm.ui" afterPath="$PROJECT_DIR$/createForm.ui" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/icon.png" afterPath="$PROJECT_DIR$/icon.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/login_dialog.ui" afterPath="$PROJECT_DIR$/login_dialog.ui" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sola_dialog_base.ui" afterPath="$PROJECT_DIR$/sola_dialog_base.ui" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sola_dialog_base2.ui" afterPath="$PROJECT_DIR$/sola_dialog_base2.ui" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/__init__.py" afterPath="$PROJECT_DIR$/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/metadata.txt" afterPath="$PROJECT_DIR$/metadata.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources.py" afterPath="$PROJECT_DIR$/resources.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources.qrc" afterPath="$PROJECT_DIR$/resources.qrc" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources_rc.py" afterPath="$PROJECT_DIR$/resources_rc.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sola_dialog.py" afterPath="$PROJECT_DIR$/sola_dialog.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/style.qml" afterPath="$PROJECT_DIR$/style.qml" />
+    <list default="true" id="12b20acb-861b-4e59-a769-2775c1eda8ae" name="Default" comment="Updated Plugin name and UI">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/icon.psd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/splash2015.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config - Copy.ini" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config_kangis.ini" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/config_local.ini" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/deployment.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/parcel.qml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/sltr-plugin.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sltr.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <list id="f3d5ee10-6fa6-468c-9480-935baf67bb43" name="IDE files" comment="These are ide files" />
@@ -70,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sltr.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="sltr.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/sltr.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="10489">
-              <caret line="30" column="19" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.55135137" vertical-offset="306" max-vertical-offset="10489">
+              <caret line="34" column="36" selection-start-line="34" selection-start-column="36" selection-end-line="34" selection-end-column="36" />
               <folding>
                 <marker date="1443445559004" expanded="true" signature="16579:16668" placeholder="select * fro..user..." />
                 <marker date="1443445559004" expanded="true" signature="19896:19954" placeholder="select nr fr..form..." />
@@ -97,10 +88,40 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="resources.qrc" pinned="false" current-in-tab="true">
+      <file leaf-file-name="resources.qrc" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources.qrc">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="384">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="204">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config - Copy.ini" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config - Copy.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="204">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config_kangis.ini" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config_kangis.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="204">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="config_local.ini" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config_local.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="204">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
@@ -476,16 +497,23 @@
       <option name="project" value="LOCAL" />
       <updated>1438258713554</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Updated Plugin name and UI">
+      <created>1444732345747</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1444732345747</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1378" height="744" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32789558" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32843137" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.22003035" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952693" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -495,7 +523,6 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33006537" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -524,7 +551,8 @@
     <MESSAGE value="Ok Saving Grace of God helped me recover this" />
     <MESSAGE value="Working version" />
     <MESSAGE value="Fixed issue with the double prompts" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed issue with the double prompts" />
+    <MESSAGE value="Updated Plugin name and UI" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated Plugin name and UI" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
@@ -578,6 +606,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="34" max-vertical-offset="697">
           <caret line="2" column="33" selection-start-line="2" selection-start-column="33" selection-end-line="2" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -592,6 +621,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="102" max-vertical-offset="238">
           <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -606,6 +636,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="100">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -636,6 +667,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
           <caret line="16" column="49" selection-start-line="16" selection-start-column="49" selection-end-line="16" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -666,6 +698,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.19520548" vertical-offset="124" max-vertical-offset="731">
           <caret line="14" column="26" selection-start-line="14" selection-start-column="26" selection-end-line="14" selection-end-column="26" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -680,6 +713,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.23817864" vertical-offset="0" max-vertical-offset="571">
           <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -702,6 +736,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.13527398" vertical-offset="113" max-vertical-offset="697">
           <caret line="2" column="33" selection-start-line="2" selection-start-column="33" selection-end-line="2" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -718,21 +753,6 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="204">
           <caret line="6" column="32" selection-start-line="6" selection-start-column="32" selection-end-line="6" selection-end-column="32" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sltr.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="10489">
-          <caret line="30" column="19" selection-start-line="30" selection-start-column="19" selection-end-line="30" selection-end-column="19" />
-          <folding>
-            <marker date="1443445559004" expanded="true" signature="16579:16668" placeholder="select * fro..user..." />
-            <marker date="1443445559004" expanded="true" signature="19896:19954" placeholder="select nr fr..form..." />
-            <marker date="1443445559004" expanded="true" signature="20796:20891" placeholder="select name_..cadastre_object..." />
-            <marker date="1443445559004" expanded="true" signature="21952:22063" placeholder="insert into ..." />
-            <marker date="1443445559004" expanded="true" signature="23934:24056" placeholder="select cadas..." />
-            <marker date="1443445559004" expanded="true" signature="23996:24046" placeholder="SELECT ST_Po..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -757,6 +777,45 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="584">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config_kangis.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="370">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config_local.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="370">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config - Copy.ini">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="370">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sltr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.55135137" vertical-offset="306" max-vertical-offset="10489">
+          <caret line="34" column="36" selection-start-line="34" selection-start-column="36" selection-end-line="34" selection-end-column="36" />
+          <folding>
+            <marker date="1443445559004" expanded="true" signature="16579:16668" placeholder="select * fro..user..." />
+            <marker date="1443445559004" expanded="true" signature="19896:19954" placeholder="select nr fr..form..." />
+            <marker date="1443445559004" expanded="true" signature="20796:20891" placeholder="select name_..cadastre_object..." />
+            <marker date="1443445559004" expanded="true" signature="21952:22063" placeholder="insert into ..." />
+            <marker date="1443445559004" expanded="true" signature="23934:24056" placeholder="select cadas..." />
+            <marker date="1443445559004" expanded="true" signature="23996:24046" placeholder="SELECT ST_Po..." />
+          </folding>
         </state>
       </provider>
     </entry>
