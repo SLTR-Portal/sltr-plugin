@@ -5,7 +5,7 @@
 #							 -------------------
 #		begin				: 2015-04-20
 #		git sha				: $Format:%H$
-#		copyright			: (C) 2015 by SOLA
+#		copyright			: (C) 2015 by SLTR Team
 #		email				: samuel.okoroafor@gems3nigeria.com
 # ***************************************************************************/
 #
@@ -28,7 +28,7 @@
 # LOCALES = af
 LOCALES =
 
-# If locales are enabled, set the name of the lrelease binary on your system. If
+# If locales are enabled, set the name of the release binary on your system. If
 # you have trouble compiling the translations, you may have to specify the full path to
 # lrelease
 #LRELEASE = lrelease
@@ -41,10 +41,10 @@ SOURCES = \
 	sola.py \
 	sola_dialog.py
 
-PLUGINNAME = SolaPlugin
+PLUGINNAME = SLTRPlugin
 
 PY_FILES = \
-	sola.py \
+	sltr.py \
 	sola_dialog.py \
 	__init__.py
 
